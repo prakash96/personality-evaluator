@@ -68,8 +68,36 @@ May not coach others who are less assertive.`
             window.location.href = "/survey";
         }
 
+        
+
         setTimeout(() => {
-            let result = [{ "id": "1", "text": "Aggresive", "score": 10 }, { "id": "2", "text": "Passive", "score": 9 }, { "id": "3", "text": "Receptive", "score": -5 }, { "id": "4", "text": "Assertive", "score": -4 }];
+
+            let response = JSON.parse(sessionStorage.getItem(uuid));
+            let answersValues = Object.values(response.questionaire);
+
+            let aggresiveScore = 0;
+            let passiveScore = 0;
+            let receptiveScore = 0;
+            let assertiveScore = 0;
+            
+            for(let i=0; i<answersValues.length; i=i+4){
+                aggresiveScore+= parseInt(answersValues); 
+            }
+
+
+            for(let i=1; i<answersValues.length; i=i+4){
+                passiveScore+= parseInt(answersValues); 
+            }
+
+            for(let i=2; i<answersValues.length; i=i+4){
+                receptiveScore+= parseInt(answersValues); 
+            }
+
+            for(let i=3; i<answersValues.length; i=i+4){
+                assertiveScore+= parseInt(answersValues); 
+            }
+
+            let result = [{ "id": "1", "text": "Aggresive", "score": aggresiveScore }, { "id": "2", "text": "Passive", "score": passiveScore }, { "id": "3", "text": "Receptive", "score": receptiveScore }, { "id": "4", "text": "Assertive", "score": assertiveScore }];
             this.state.data = [
                 ['Attribute', 'Score']];
 
