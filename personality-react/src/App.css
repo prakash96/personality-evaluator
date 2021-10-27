@@ -1,0 +1,68 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+/*tbody tr td:first-child {
+  width: 20em;
+  min-width: 20em;
+  max-width: 20em;
+  word-break: break-all;
+}*/
+table {
+  table-layout: fixed;
+ 
+}
+
+thead tr th{
+  width: 5em;
+  min-width: 5em;
+  max-width: 5em;
+  overflow: hidden;
+  
+}
+
+.sv-question__title {
+  background-color: rgba(26, 179, 148, 0.2);
+  
+}
+
+.sv-string-viewer {
+  display:inline-block;
+}
