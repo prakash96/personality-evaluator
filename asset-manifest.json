@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/personality-evaluator/static/css/main.b4d983ab.chunk.css",
+    "main.js": "/personality-evaluator/static/js/main.5d7d2ec9.chunk.js",
+    "main.js.map": "/personality-evaluator/static/js/main.5d7d2ec9.chunk.js.map",
+    "runtime-main.js": "/personality-evaluator/static/js/runtime-main.69ff9b55.js",
+    "runtime-main.js.map": "/personality-evaluator/static/js/runtime-main.69ff9b55.js.map",
+    "static/css/2.c05c2ba9.chunk.css": "/personality-evaluator/static/css/2.c05c2ba9.chunk.css",
+    "static/js/2.b570fdd6.chunk.js": "/personality-evaluator/static/js/2.b570fdd6.chunk.js",
+    "static/js/2.b570fdd6.chunk.js.map": "/personality-evaluator/static/js/2.b570fdd6.chunk.js.map",
+    "static/js/3.a72f0734.chunk.js": "/personality-evaluator/static/js/3.a72f0734.chunk.js",
+    "static/js/3.a72f0734.chunk.js.map": "/personality-evaluator/static/js/3.a72f0734.chunk.js.map",
+    "index.html": "/personality-evaluator/index.html",
+    "static/css/2.c05c2ba9.chunk.css.map": "/personality-evaluator/static/css/2.c05c2ba9.chunk.css.map",
+    "static/css/main.b4d983ab.chunk.css.map": "/personality-evaluator/static/css/main.b4d983ab.chunk.css.map",
+    "static/js/2.b570fdd6.chunk.js.LICENSE.txt": "/personality-evaluator/static/js/2.b570fdd6.chunk.js.LICENSE.txt",
+    "static/media/logo.6ce24c58.svg": "/personality-evaluator/static/media/logo.6ce24c58.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.69ff9b55.js",
+    "static/css/2.c05c2ba9.chunk.css",
+    "static/js/2.b570fdd6.chunk.js",
+    "static/css/main.b4d983ab.chunk.css",
+    "static/js/main.5d7d2ec9.chunk.js"
+  ]
+}
