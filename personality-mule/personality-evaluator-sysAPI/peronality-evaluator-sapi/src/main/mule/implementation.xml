@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="SELECT_implementationFlow" doc:id="70ef5a8b-ef48-4d8a-ab7d-8bfed2a8b84b" >
+		<db:select doc:name="Select" doc:id="d90d4b93-fa59-4481-bd9b-340eaf3bf6ce" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM "DEMO_DB"."PUBLIC"."QUESTIONS";
+]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="e34cf4e8-9406-4a7f-b269-7abf7739ac8f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="SELECT_GET_UUID" doc:id="fe283f2f-5e39-4770-a49e-961a4547501f" >
+		<db:select doc:name="Select" doc:id="59ded0ac-a711-41f4-b838-874e38e05302" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM "DEMO_DB"."PUBLIC"."RESPONSE" WHERE UUID =:uuid ;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	uuid: attributes.uriParams.uuid
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="b3bc718a-9d4c-480e-ad11-1eae1c4a1bdd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="INSERT_INTO_PERSONS" doc:id="0e07e425-110c-4bde-b2be-f3413c96e86e" >
+		<db:bulk-insert doc:name="Bulk insert" doc:id="bef0daf7-b405-4970-9095-b1e6219ae5c4" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into "DEMO_DB"."PUBLIC"."PERSON" (NAME,AGE,EMAIL) values (:name,:age,:email);]]></db:sql>
+		</db:bulk-insert>
+		<ee:transform doc:name="Transform Message" doc:id="c75656b6-a13c-40e6-b863-83667a0dc5a9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="INSERT_INTO_RESPONSE" doc:id="19e4a8ab-dfea-41f6-8e3f-8941e5aa91f8" >
+		<db:bulk-insert doc:name="Bulk insert" doc:id="34667c54-93a4-4fc1-8049-bc11a305e230" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO "DEMO_DB"."PUBLIC"."RESPONSE" (QUESTIONID,RESPONSE,UUID) VALUES (:questionId,:response,:uuid);]]></db:sql>
+		</db:bulk-insert>
+		<ee:transform doc:name="Transform Message" doc:id="bac2cc30-9159-4fff-848a-7bcb9c387952" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

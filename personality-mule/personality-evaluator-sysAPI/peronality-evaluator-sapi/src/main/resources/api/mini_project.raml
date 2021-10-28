@@ -1,0 +1,69 @@
+#%RAML 1.0
+title: mini_project
+
+/questions:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                  "id": 123435,
+                  "text": "What's capital of India?"
+              }
+/answersperson:
+  post:
+    body:
+      application/json:
+        example:
+          {
+            "name": "XYZ",
+            "age": 18,
+            "email": "xyz@gmail.com",
+            "responses": [{
+                           "questionId": "535353",
+                            "response": "0" }]
+          }
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {
+                "uuid":"8987-eyvv-67456"
+              }
+/answersresponse:
+  post:
+    body:
+      application/json:
+        example:
+          {
+            "name": "XYZ",
+            "age": 18,
+            "email": "xyz@gmail.com",
+            "responses": [{
+                           "questionId": "535353",
+                            "response": "0" }]
+          }
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {
+                "uuid":"8987-eyvv-67456"
+              }
+
+/report/{uuid}:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "responsive": 4,
+                 "aggresive": 5                
+              }
+            

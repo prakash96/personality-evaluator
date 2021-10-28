@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="359223f3-b224-4b20-b08c-11dc88518843" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="d822322d-8e34-43a5-898c-72cdb2da1f53" >
+		<db:generic-connection url="${secure::snowflake.url}" driverClassName="net.snowflake.client.jdbc.SnowflakeDriver" user="${secure::snowflake.username}" password="${secure::snowflake.password}" />
+	</db:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="9d4e33a2-82da-4850-9584-02ad83722b60" file="env/${env}.properties" key="${pass}" />
+	<global-property doc:name="Global Property" doc:id="fe7da259-e14d-4e8b-ab7c-3970a4075358" name="env" value="dev" />
+	<global-property doc:name="Global Property" doc:id="5a7a1e28-7d9d-4849-919f-cc5567191cf3" name="pass" value="password12345678" />
+	
+	
+</mule>

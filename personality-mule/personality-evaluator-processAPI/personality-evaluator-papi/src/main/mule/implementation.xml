@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="e49af469-427b-48b3-8ba6-1c1b0124a1f4" />
+	<sub-flow name="validation" doc:id="8b7901bc-b90d-48b6-984a-7d8a7bb9c941" >
+		<validation:is-not-null doc:name="Is not null" doc:id="f8a34e48-a137-4315-9c0a-166057f07457" config-ref="Validation_Config" value="#[payload.name]" message="Name cannot be empty" />
+		<validation:is-not-null doc:name="Is not null" doc:id="72a7acb1-12df-4711-8003-3d616c2968bc" value="#[payload.age]" message="Age cannot be empty" config-ref="Validation_Config" />
+		<validation:is-email doc:name="Is email" doc:id="4b20f9b4-63a1-417a-8834-f3f9f62c35d4" config-ref="Validation_Config" email="#[payload[0].email]" message="Email is not valid" />
+	</sub-flow>
+	<flow name="get_question" doc:id="156cf35c-8694-4952-a9bf-342ea7d7299e" maxConcurrency="1">
+		<http:request method="GET" doc:name="Request" doc:id="437c36c5-3a9f-49a2-acbd-cb493638d7fc" url="http://peronality-evaluator-sapi.us-e2.cloudhub.io/api/questions" responseTimeout="#[3000000000000000000]"/>
+		<ee:transform doc:name="Transform Message" doc:id="3459ad74-304c-4390-afe9-4761462945d5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="post_answers" doc:id="ceaa901a-f613-41a1-9a64-ef76d15545d2" maxConcurrency="1">
+		<ee:transform doc:name="Transform Message" doc:id="48b75075-9dce-41c5-bff5-0e83014b3ed3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[payload]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="validation" doc:id="4fb692a5-2165-498e-b1d5-1298a46f6754" name="validation" />
+		<try doc:name="Try" doc:id="52e5dd3e-fef8-41b1-b191-c63c118ce6b1" transactionalAction="ALWAYS_BEGIN">
+			<http:request method="POST" doc:name="Insert_to_person" doc:id="4b3e9a9e-8f90-4414-9539-7cdc396d42fc" url="http://peronality-evaluator-sapi.us-e2.cloudhub.io/api/answersperson" target="person" responseTimeout="300000000"/>
+			<set-variable value="#[uuid()]" doc:name="Set Variable" doc:id="2f773219-541f-4377-891b-5fa1f07c7060" variableName="generated_uuid"/>
+			<ee:transform doc:name="Transform Message" doc:id="687911b4-000d-4bcb-845e-46be8d104647" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload[0].responses map
+{
+	questionId:$.questionId,
+    response:$.response,
+    uuid: vars.generated_uuid
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="uuid" ><![CDATA[%dw 2.0
+output application/json
+---
+payload[0].responses map
+{
+	questionId:$.questionId,
+    response:$.response,
+    uuid: vars.generated_uuid
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<http:request method="POST" doc:name="Insert_to_response" doc:id="a2009385-52c7-4ab0-ac46-adef41962b51" url="http://peronality-evaluator-sapi.us-e2.cloudhub.io/api/answersresponse" responseTimeout="300000000"/>
+			<ee:transform doc:name="Transform Message" doc:id="55aeee57-fc0a-4153-aa7d-9016cd2d7ea8" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</try>
+		<set-payload value="#[vars.uuid.uuid[0]  ++ ' is your ID. PLease use /report/' ++ vars.uuid.uuid[0] ++ ' to see your report']" doc:name="Set Payload" doc:id="b08eca8c-2c34-43e6-828a-d6c600d2ed47" />
+	</flow>
+	<flow name="get_uuid" doc:id="799409b2-6578-4a2d-84e3-1862bdb5426d" maxConcurrency="1">
+		<http:request method="GET" doc:name="Request" doc:id="b6ddc0e1-52ed-412b-bbe2-53c0b0fe890c" url="http://peronality-evaluator-sapi.us-e2.cloudhub.io/api/report/{uuid}" responseTimeout="300000000">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"uuid" : attributes.uriParams.uuid
+}]]]></http:uri-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="31e88547-a72a-473e-89c3-047b47ac5313">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+'Aggresive':sum(payload filter ((item, index) -> item.QUESTIONID ~= '1' or item.QUESTIONID ~= '5' or item.QUESTIONID ~= '9' or item.QUESTIONID ~= '13' or item.QUESTIONID ~= '17' or item.QUESTIONID ~= '21' or item.QUESTIONID ~= '25' or item.QUESTIONID ~= '29' ) map ((item, index) -> item.RESPONSE )),
+'Passive':sum(payload filter ((item, index) -> item.QUESTIONID ~= '2' or item.QUESTIONID ~= '6' or item.QUESTIONID ~= '10' or item.QUESTIONID ~= '14' or item.QUESTIONID ~= '18' or item.QUESTIONID ~= '22' or item.QUESTIONID ~= '26' or item.QUESTIONID ~= '30' ) map ((item, index) -> item.RESPONSE )),
+'Receptive':sum(payload filter ((item, index) -> item.QUESTIONID ~= '3' or item.QUESTIONID ~= '7' or item.QUESTIONID ~= '11' or item.QUESTIONID ~= '15' or item.QUESTIONID ~= '19' or item.QUESTIONID ~= '23' or item.QUESTIONID ~= '27' or item.QUESTIONID ~= '31' ) map ((item, index) -> item.RESPONSE )),
+'Assertive': sum(payload filter ((item, index) -> item.QUESTIONID ~= '4' or item.QUESTIONID ~= '8' or item.QUESTIONID ~= '12' or item.QUESTIONID ~= '16' or item.QUESTIONID ~= '20' or item.QUESTIONID ~= '24' or item.QUESTIONID ~= '28' or item.QUESTIONID ~= '32' ) map ((item, index) -> item.RESPONSE ))
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

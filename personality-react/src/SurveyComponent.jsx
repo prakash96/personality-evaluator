@@ -17,13 +17,13 @@ class SurveyComponent extends Component {
         super(props);
         this.state = { json: {} };
     }
-
+    QUESTIONS_API = "http://personality-evaluator-eapi.us-e2.cloudhub.io/api/questions";
 
     uuidv4() {
-        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         );
-      }
+    }
 
     render() {
 
@@ -35,7 +35,7 @@ class SurveyComponent extends Component {
                 setTimeout(() => {
                     let uuid = that.uuidv4();
                     sessionStorage.setItem(uuid, JSON.stringify(sender.data));
-                    window.location.href = "/survey-result?uuid="+uuid;
+                    window.location.href = "/survey-result?uuid=" + uuid;
                 }, 3000);
 
                 document.querySelector("#survey-loader").style.display = "block";
@@ -58,6 +58,19 @@ class SurveyComponent extends Component {
         );
     }
 
+    invokeQuestionsAPI(){
+        fetch(this.QUESTIONS_API)
+        .then(res => res.json())
+        .then(
+            (result) => {
+               console.log(result);    
+            },
+
+            (error) => {
+                console.error(error);
+            }
+        );
+    }
     componentDidMount() {
         setTimeout(() => {
             let rows = [{ value: 1, text: "When I disagree with an opinion expressed by others, I openly express my disagreement." },
@@ -91,8 +104,9 @@ class SurveyComponent extends Component {
             { value: 29, text: "I can get irritated or lose my temper when others criticize me." },
             { value: 30, text: "I like watching the actions of other people when they get excited or highly animated." },
             { value: 31, text: "While influencing another person, I tend to use the words that will appeal him." },
-        { value: 32, text: "I tell people my rights and personal expectations when necessary." }];
+            { value: 32, text: "I tell people my rights and personal expectations when necessary." }];
 
+           
             let json = {
                 questions: [
                     {
@@ -102,7 +116,7 @@ class SurveyComponent extends Component {
                         { value: 0, text: "ST" },
                         { value: -1, text: "OC" },
                         { value: -2, text: "AN" }],
-                        rows: [ ]
+                        rows: []
                     },
                     {
                         type: "text",
