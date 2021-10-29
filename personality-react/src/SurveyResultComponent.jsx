@@ -9,6 +9,7 @@ Survey.StylesManager.applyTheme("modern");
 
 class SurveyResultComponent extends Component {
 
+    RESULT_ENDPOINT = "http://personality-evaluator-eapi.us-e2.cloudhub.io/api/report/";
     texts = {
         "1": "In this quadrant, an individual uses high enthusiasm and is low on understanding. His primary objective is to be in control in most of the situations and conversations with others. In order to achieve their objective, they may consciously or unconsciously tread on others rights or feelings. Such individuals may fail to listen to others or may regularly interrupt them. They may take a very direct and commanding approach by using strong body language and a loud confident voice.",
         "2": "In this quadrant, the individual tends to use low enthusiasm and low understanding levels. Such an individual normally keeps to himself or remains quiet and unassuming in most discussions or in meetings with others. They may not feel the need to join others in discussions and may silently watch the ‘antics’ of others. When directly engaged, this style is likely to often give way or concede to more aggressive types but to mentally analyze how they might redress the balance in a different way in the future.",
@@ -62,62 +63,53 @@ May not coach others who are less assertive.`
     }
 
 
+    invokeResultAPI(uuid) {
+        fetch(this.RESULT_ENDPOINT + uuid)
+            .then(res => res.json())
+            .then(
+                (response) => {
+                    let aggresiveScore = response.Aggresive;
+                    let passiveScore = response.Passive;
+                    let receptiveScore = response.Receptive;
+                    let assertiveScore = response.Assertive;
+                    
+                    
+                    let result = [{ "id": "1", "text": "Aggresive", "score": aggresiveScore }, { "id": "2", "text": "Passive", "score": passiveScore }, { "id": "3", "text": "Receptive", "score": receptiveScore }, { "id": "4", "text": "Assertive", "score": assertiveScore }];
+                    this.state.data = [
+                        ['Attribute', 'Score']];
+        
+                    let maxIndex = 0, max = result[0].score;
+                    for (let i = 0; i < result.length; i++) {
+                        if (result[i].score > max) {
+                            max = result[i].score;
+                            maxIndex = i;
+                        }
+                        this.state.data.push([result[i].text, result[i].score]);
+                    }
+                    
+                    document.querySelector("#survey-result-loader").style.display = "none";
+                    document.querySelector("#survey-result-content").style.display = "block";
+                    this.onclickRowItem(maxIndex+1);
+
+
+                },
+
+                (error) => {
+                    console.error(error);
+                }
+            );
+    }
+
     componentDidMount() {
         let uuid = new URLSearchParams(window.location.search).get("uuid");
         if (!uuid) {
             window.location.href = "/survey";
         }
 
-        
-
-        setTimeout(() => {
-
-            let response = JSON.parse(sessionStorage.getItem(uuid));
-            let answersValues = Object.values(response.questionaire);
-
-            let aggresiveScore = 0;
-            let passiveScore = 0;
-            let receptiveScore = 0;
-            let assertiveScore = 0;
-            
-            for(let i=0; i<answersValues.length; i=i+4){
-                aggresiveScore+= parseInt(answersValues); 
-            }
-
-
-            for(let i=1; i<answersValues.length; i=i+4){
-                passiveScore+= parseInt(answersValues); 
-            }
-
-            for(let i=2; i<answersValues.length; i=i+4){
-                receptiveScore+= parseInt(answersValues); 
-            }
-
-            for(let i=3; i<answersValues.length; i=i+4){
-                assertiveScore+= parseInt(answersValues); 
-            }
-
-            let result = [{ "id": "1", "text": "Aggresive", "score": aggresiveScore }, { "id": "2", "text": "Passive", "score": passiveScore }, { "id": "3", "text": "Receptive", "score": receptiveScore }, { "id": "4", "text": "Assertive", "score": assertiveScore }];
-            this.state.data = [
-                ['Attribute', 'Score']];
-
-            let maxIndex = 0, max = result[0].score;
-            for (let i = 0; i < result.length; i++) {
-                if (result[i].score > max) {
-                    max = result[i].score;
-                    maxIndex = i;
-                }
-                this.state.data.push([result[i].text, result[i].score]);
-            }
-            
-            document.querySelector("#survey-result-loader").style.display = "none";
-            document.querySelector("#survey-result-content").style.display = "block";
-            this.onclickRowItem(maxIndex+1);
-        }, 1000);
-
         document.querySelector("#survey-result-loader").style.display = "block";
         document.querySelector("#survey-result-content").style.display = "none";
 
+        this.invokeResultAPI(uuid);
     }
 
     onclickRowItem(index) {
