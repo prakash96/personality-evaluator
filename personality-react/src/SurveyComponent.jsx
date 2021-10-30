@@ -18,8 +18,8 @@ class SurveyComponent extends Component {
         super(props);
         this.state = { json: {} };
     }
-    QUESTIONS_API = "http://personality-evaluator-eapi.us-e2.cloudhub.io/api/questions";
-    ANSWERS_ENDPOINT = "http://personality-evaluator-eapi.us-e2.cloudhub.io/api/answers";
+    QUESTIONS_API = "https://personality-evaluator-eapi.us-e2.cloudhub.io/api/questions";
+    ANSWERS_ENDPOINT = "https://personality-evaluator-eapi.us-e2.cloudhub.io/api/answers";
     
     uuidv4() {
         return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>

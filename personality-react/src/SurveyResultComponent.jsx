@@ -9,7 +9,7 @@ Survey.StylesManager.applyTheme("modern");
 
 class SurveyResultComponent extends Component {
 
-    RESULT_ENDPOINT = "http://personality-evaluator-eapi.us-e2.cloudhub.io/api/report/";
+    RESULT_ENDPOINT = "https://personality-evaluator-eapi.us-e2.cloudhub.io/api/report/";
     texts = {
         "1": "In this quadrant, an individual uses high enthusiasm and is low on understanding. His primary objective is to be in control in most of the situations and conversations with others. In order to achieve their objective, they may consciously or unconsciously tread on others rights or feelings. Such individuals may fail to listen to others or may regularly interrupt them. They may take a very direct and commanding approach by using strong body language and a loud confident voice.",
         "2": "In this quadrant, the individual tends to use low enthusiasm and low understanding levels. Such an individual normally keeps to himself or remains quiet and unassuming in most discussions or in meetings with others. They may not feel the need to join others in discussions and may silently watch the ‘antics’ of others. When directly engaged, this style is likely to often give way or concede to more aggressive types but to mentally analyze how they might redress the balance in a different way in the future.",
