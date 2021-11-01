@@ -142,6 +142,7 @@ class SurveyComponent extends Component {
                     type: "text",
                     name: "email",
                     inputType: "email",
+                    isRequired: true,
                     title: "Please enter your email address if you prefer to expose your email to community"
                 }
             ]
